@@ -2,14 +2,14 @@
 
 namespace App\Controller;
 
-use App\Entity\Students;
-use App\Repository\StudentsRepository;
+use App\Entity\Classes;
+use App\Repository\ClassesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class StudentsController extends AbstractController
+class ClassController extends AbstractController
 {
     private $emi;
     public function __construct(EntityManagerInterface $emi)
@@ -17,10 +17,10 @@ class StudentsController extends AbstractController
         $this->emi =$emi;
     }
 
-    #[Route('/student', name: 'student')]
+    #[Route('/class', name: 'class')]
     public function index(): Response
     {
-        $repository = $this->emi->getRepository(Students::class);
+        $repository = $this->emi->getRepository(Classes::class);
 
         // findAll() add method
        // $student = $repository->findAll();
@@ -48,7 +48,7 @@ class StudentsController extends AbstractController
        // dump var
         // dd($student);
 
-        return $this->render('addstudent.html.twig');
+        return $this->render('addclass.html.twig');
     }
 
 }
