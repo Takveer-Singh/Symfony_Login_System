@@ -1,8 +1,3 @@
-{# {% if title %}
-<p>{{title}} is a movie</p>
-{% else %}
-<p> whoops, no title has been set</p>
-{% endif %} #}
 
 {% extends "base.html.twig" %}
 
@@ -13,15 +8,41 @@
 
 
 {% block content %}
-<div class="col-10">
-      class
-    </div>
-   {# {% for movie in movies %}
-   <li>{{movie}}</li> #}
+<div style="width:70%;">
+<h1 style="background-color: black;color:white;border-radius:15px;margin-bottom:20px;width:20%;text-align:center;margin-top:10px;">Add Class</h1>
+               <div class="form">
+               {{form_start(form)}}
+               {{form_widget(form)}}
+                            <div class="line"></div>
+                        <div class="form-group" style="margin-top: 10px;">
+                            <button type="submit" class="btn btn-info">Submit</button>
+                        </div>
+                        {{form_end(form)}}
+                        </div>
+</div>
 
-{# <img src="{{asset('build/images/image1.55049960.jpg')}}" alt=""> #}
-   {# {{_self}}
-   {{_charset}} #}
-    
-   {# {% endfor %} #}
+<div class="col-10" style="margin-left: 250px;margin-top: -500px;width: 70%;">
+<h3 style="background-color: gray;color:white;border-radius:15px;margin-top:20px;padding:5px;">Class Data</h3><br />
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                        
+                            <tr>
+                                <th style=" background-color: #04AA6D;color: white;">Class Name</th>
+                                <th style=" background-color: #04AA6D;color: white;">Count</th>
+                                <th style=" background-color: #04AA6D;color: white;">id</th>
+                                <th style="text-align: center;background-color: #04AA6D;color: white;">Delete</th>
+                                <th style="text-align: center;background-color: #04AA6D;color: white;">Update</th>
+                            </tr>
+                             {% for class in classes %}
+                                    <tr>
+                                        <td>{{class.class_name}}</td>
+                                        <td id="" class="Student_Count">{{class.Student_Count}}</td>
+                                        <td>{{class.id}}</td>
+                                        <td style="text-align:center;"><button type="button" class="btn btn-danger"><a style="color:white;text-decoration:none; width:30%;" href="/deletedata/{{ class.id }}" class="delete_classdata"><i style="margin-right: 5px;" class="fa-solid fa-trash-can"></i>Delete</a></button></td>
+                                        <td style="text-align:center;"><button type="button" class="btn btn-warning"><a style="color:white;text-decoration:none; width:30%;" href="/updatedata/{{ class.id }}" class="delete_classdata"><i style="margin-right: 5px;" class="fa-solid fa-pen-to-square"></i>Edit</a></button></td>
+                                    </tr>
+                                    {% endfor %}
+                        </table>
+        </div>
+    </div>
 {% endblock %}

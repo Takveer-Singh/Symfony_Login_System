@@ -3,52 +3,108 @@
 namespace App\Controller;
 
 use App\Entity\Classes;
+use App\Form\ClassFormType;
 use App\Repository\ClassesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ClassController extends AbstractController
 {
-    private $emi;
-    public function __construct(EntityManagerInterface $emi)
+    private $classRepository;
+    private $em;
+    public function __construct(ClassesRepository $classRepository,EntityManagerInterface $em)
     {
-        $this->emi =$emi;
+        $this->em = $em;
+        $this->classRepository = $classRepository;
     }
 
-    #[Route('/class', name: 'class')]
-    public function index(): Response
+    // #[Route('/classes', methods: ['GET'], name: 'classes')]
+    // public function index(): Response
+    // {
+    //     $classes = $this->classRepository->findAll();
+
+    //     return $this->render('addclass.html.twig',[
+    //         'classes' =>$classes
+    //     ]);
+    // }
+
+    // #[route('/create',name: 'create')]
+    // public function create(): Response
+    // {
+    //     $classcreate = new Classes();
+    //     $form =$this->createForm(ClassFormType::class,$classcreate);
+
+    //     return $this->render('addclass.html.twig',[
+    //         'form'=>$form->createView()
+    //     ]);
+    // }
+
+
+    #[Route('/class/{id}', methods: ['GET'], name: 'class')]
+    public function show($id): Response
     {
-        $repository = $this->emi->getRepository(Classes::class);
+        $class = $this->classRepository->find($id);
 
-        // findAll() add method
-       // $student = $repository->findAll();
-
-       // find() method
-       // select * from student where id=2;
-      // $student = $repository->find(2);
-
-       // findBy() method
-       // select * from student where ORDER BY id DESC;
-      // $student = $repository->findBy([],['id'=>'DESC']);
-
-       // findOneBy() method
-       // select * from student where id=2 AND Name='Bhavya Bhatia' ORDER BY id DESC;
-      // $student = $repository->findOneBy(['id'=>2,'Name'=>'Bhavya Bhatia'],['id'=>'DESC']);
-
-       // count method
-       // select COUNT() from movie WHERE id=1;
-      // $student = $repository->count(['id'=>1]);
-
-       // getClassName() method
-       // get the entity name
-       // $student = $repository->getClassName();
-
-       // dump var
-        // dd($student);
-
-        return $this->render('addclass.html.twig');
+        return $this->render('showclass.html.twig',[
+            'class' =>$class
+        ]);
     }
 
+    #[Route('/create', name: 'create')]
+    public function create(Request $request): Response
+    {
+        $class = new Classes();
+       $form = $this->createForm(ClassFormType::class,$class);
+      $form->handleRequest($request);
+      if($form->isSubmitted() && $form->isValid())
+      {
+        $newClass = $form->getData();
+        $this->em->persist($newClass);
+        $this->em->flush();
+        return $this->redirectToRoute('create');
+      }
+      //$classesdata =  $this->classRepository->findAll();
+      $RawQuery  = 'SELECT a.id, a.class_name, COUNT(c.id) AS Student_Count FROM classes a
+      LEFT JOIN students c ON c.class_id_id = a.id
+      GROUP BY a.id';
+      $Classes = $this->classRepository->RawQuery($RawQuery);
+
+       return $this->render('addclass.html.twig',[
+        'form' => $form->createView(),
+        'classes' => $Classes,
+       ]);
+    }
+
+    #[Route('/deletedata/{id}', name: 'deletedata')]
+    public function DeleteClass($id)
+    {
+        $classdata =  $this->classRepository->find($id);
+        $this->classRepository->remove($classdata);
+        $this->em->flush();
+        return $this->redirectToRoute('create');
+    }
+
+    #[Route('/updatedata/{id}',name:'updatedata')]
+    public function UpdateClass($id,Request $request)
+    {
+        $classdata =  $this->classRepository->find($id);
+        $form = $this->createForm(ClassFormType::class,$classdata);
+        //$classesdata =  $this->classRepository->findAll();
+        $form->handleRequest($request);
+      if($form->isSubmitted() && $form->isValid())
+      {
+         $classdata->setClassName($form->get('ClassName')->getdata());
+         $this->em->flush();
+          return $this->redirectToRoute('create');
+      }
+        return $this->render('addclass.html.twig',[
+        'form' => $form->createView(),
+        'classes' => $classdata,
+       ]);
+    }
+
+    
 }

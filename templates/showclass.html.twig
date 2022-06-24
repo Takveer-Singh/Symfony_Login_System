@@ -1,0 +1,32 @@
+
+{% extends "base.html.twig" %}
+
+{% block title %}
+    Add Class page
+{% endblock %}
+
+
+
+{% block content %}
+<div class="col-10">
+<h3 style="background-color: gray;color:white;border-radius:15px;margin-top:20px;padding:5px;">Class Data</h3><br />
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th style=" background-color: #04AA6D;color: white;">Class Name</th>
+                                <th style=" background-color: #04AA6D;color: white;">Count</th>
+                                <th style=" background-color: #04AA6D;color: white;">id</th>
+                                <th style="text-align: center;background-color: #04AA6D;color: white;">Delete</th>
+                                <th style="text-align: center;background-color: #04AA6D;color: white;">Update</th>
+                            </tr>
+                                    <tr>
+                                        <td>{{class.ClassName}}</td>
+                                        <td>{{class|length}}</td>
+                                        <td>{{class.id}}</td>
+                                        <td style="text-align:center;"><button type="button" class="btn btn-danger"><a style="color:white;text-decoration:none; width:30%;" href="/classes/{{ class.id }}" class="delete_classdata"><i style="margin-right: 5px;" class="fa-solid fa-trash-can"></i>Delete</a></button></td>
+                                        <td style="text-align:center;"><button type="button" class="btn btn-warning"><a style="color:white;text-decoration:none; width:30%;" href="/classes/{{ class.id }}" class="delete_classdata"><i style="margin-right: 5px;" class="fa-solid fa-pen-to-square"></i>Edit</a></button></td>
+                                    </tr>
+                        </table>
+                    </div>
+    </div>
+{% endblock %}

@@ -39,6 +39,12 @@ class ClassesRepository extends ServiceEntityRepository
         }
     }
 
+    public function RawQuery($RawQuery  = null)
+    {
+        $statement = $this->getEntityManager()->getConnection()->prepare($RawQuery );
+        return $statement->executeQuery()->fetchAllAssociative();
+    }
+
 //    /**
 //     * @return Classes[] Returns an array of Classes objects
 //     */
