@@ -9,7 +9,7 @@
 
 {% block content %}
 <div style="width:70%;">
-<h1 style="background-color: black;color:white;border-radius:15px;margin-bottom:20px;width:20%;text-align:center;margin-top:10px;">Add Class</h1>
+<h1 style="background-color: #7386D5;color:white;border-radius:15px;margin-bottom:20px;text-align:center;margin-top:10px;">Add Class</h1>
                <div class="form">
                {{form_start(form)}}
                {{form_widget(form)}}
@@ -29,7 +29,6 @@
                             <tr>
                                 <th style=" background-color: #04AA6D;color: white;">Class Name</th>
                                 <th style=" background-color: #04AA6D;color: white;">Count</th>
-                                <th style=" background-color: #04AA6D;color: white;">id</th>
                                 <th style="text-align: center;background-color: #04AA6D;color: white;">Delete</th>
                                 <th style="text-align: center;background-color: #04AA6D;color: white;">Update</th>
                             </tr>
@@ -37,9 +36,8 @@
                                     <tr>
                                         <td>{{class.class_name}}</td>
                                         <td id="" class="Student_Count">{{class.Student_Count}}</td>
-                                        <td>{{class.id}}</td>
-                                        <td style="text-align:center;"><button type="button" class="btn btn-danger"><a style="color:white;text-decoration:none; width:30%;" href="/deletedata/{{ class.id }}" class="delete_classdata"><i style="margin-right: 5px;" class="fa-solid fa-trash-can"></i>Delete</a></button></td>
-                                        <td style="text-align:center;"><button type="button" class="btn btn-warning"><a style="color:white;text-decoration:none; width:30%;" href="/updatedata/{{ class.id }}" class="delete_classdata"><i style="margin-right: 5px;" class="fa-solid fa-pen-to-square"></i>Edit</a></button></td>
+                                        <td style="text-align:center;"><button type="button" class="btn btn-danger"><a style="color:white;text-decoration:none; width:30%;" href="/deleteclass/{{ class.id }}" class="delete_classdata"><i style="margin-right: 5px;" class="fa-solid fa-trash-can"></i>Delete</a></button></td>
+                                        <td style="text-align:center;"><button type="button" class="btn btn-warning"><a style="color:white;text-decoration:none; width:30%;" href="/updateClassdata/{{ class.id }}" class="delete_classdata"><i style="margin-right: 5px;" class="fa-solid fa-pen-to-square"></i>Edit</a></button></td>
                                     </tr>
                                     {% endfor %}
                         </table>

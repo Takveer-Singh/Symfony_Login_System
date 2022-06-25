@@ -16,7 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class StudentsController extends AbstractController
 {
     private $studentRepo;
-    private $userRepo;
     private $em;
     public function __construct(StudentsRepository $studentRepo,UsersRepository $userRepo,EntityManagerInterface $em)
     {
@@ -35,19 +34,18 @@ class StudentsController extends AbstractController
       $form->handleRequest($request);
       if($form->isSubmitted() && $form->isValid())
       {
-        $newStudent = $form->getData();
 
-         $student->setAdmissionNumber($form->get('admission_number')->getdata());
-         $student->setclassId($form->get('classId')->getdata());
+         //$student->setAdmissionNumber($form->get('admission_number')->getdata());
+         $student->setclass($form->get('class')->getdata());
 
         // CREATE USER DATA
 
         $user =new Users();
-        $user->Setname($form->get('studentname')->getdata());
-        $user->setRole('student');
-        $user->setUserName('student');
-        $user->setPassword(($form->get('studentname')->getdata()). "123");
-        $user->setUserType('student');
+        //$user->Setname($form->get('studentname')->getdata());
+        //$user->setRole('student');
+        $user->setUserName($form->get('Name')->getdata());
+        $user->setPassword(($form->get('Name')->getdata()). "123");
+        //$user->setUserType('student');
          
         
         $this->em->persist($user);
@@ -55,7 +53,7 @@ class StudentsController extends AbstractController
          //
        
 
-        $student->setUserId($user);
+        $student->setUser($user);
         $this->em->persist($student);
         $this->em->flush();
     
@@ -63,10 +61,10 @@ class StudentsController extends AbstractController
         return $this->redirectToRoute('createstudent');
       }
       $data =  $this->studentRepo->findAll();
-    //   $RawQuery  = 'SELECT a.id, a.class_name, COUNT(c.id) AS Student_Count FROM classes a
-    //   LEFT JOIN students c ON c.class_id_id = a.id
-    //   GROUP BY a.id';
-    //   $Classes = $this->studentRepo->RawQuery($RawQuery);
+      $RawQuery= 'SELECT students.id,students.class_id, students.admission_number,students.name ,users.user_name AS username,
+        classes.class_name FROM users JOIN students ON users.id=students.user_id JOIN classes ON
+        classes.id = students.class_id';
+        $data = $this->studentRepo->RawQuery($RawQuery);
 
        return $this->render('addstudent.html.twig',[
         'form' => $form->createView(),
@@ -74,7 +72,7 @@ class StudentsController extends AbstractController
        ]);
     }
 
-    #[Route('/deletedata/{id}', name: 'deletedata')]
+    #[Route('/deletestudent/{id}', name: 'deletestudent')]
     public function DeleteClass($id)
     {
         $data =  $this->studentRepo->find($id);
@@ -83,22 +81,52 @@ class StudentsController extends AbstractController
         return $this->redirectToRoute('createstudent');
     }
 
-    #[Route('/updatedata/{id}',name:'updatedata')]
+    // #[Route('/updatestudent/{id}',name:'updatestudent')]
+    // public function UpdateClass($id,Request $request)
+    // {
+    //     $data =  $this->studentRepo->find($id);
+    //     $RawQuery = 'SELECT students.id,students.name, students.class_id,students.admission_number,
+    //     classes.class_name FROM Classes JOIN Students ON classes.id = students.class_id';
+    //     $data = $this->studentRepo->RawQuery($RawQuery);
+    
+    //     $form = $this->createForm(StudentFormType::class,$data);
+    //     //$classesdata =  $this->classRepository->findAll();
+    //     $form->handleRequest($request);
+    //   if($form->isSubmitted() && $form->isValid())
+    //   {
+    //      $data->setAdmissionNumber($form->get('Admission_Number')->getdata());
+    //      $data->setName($form->get('Name')->getdata());
+    //      $data->setClass($form->get('class')->getdata());
+    //     //  $data->setclassId($form->get('classId')->getdata());
+    //      $this->em->flush();
+    //       return $this->redirectToRoute('createstudent');
+    //   }
+    //     return $this->render('addstudent.html.twig',[
+    //     'form' => $form->createView(),
+    //     'students' => $data,
+    //    ]);
+    // }
+
+    #[Route('/updatestudent/{id}',name:'updatestudent')]
     public function UpdateClass($id,Request $request)
     {
-        $data =  $this->studentRepo->find($id);
-        $form = $this->createForm(StudentFormType::class,$data);
-        //$classesdata =  $this->classRepository->findAll();
+        $studentdata =  $this->studentRepo->find($id);
+        
+        $studentsdata =  $this->studentRepo->FindStudentDataWithOtherFeilds();
+
+        $form = $this->createForm(StudentFormType::class,$studentdata);
         $form->handleRequest($request);
+
       if($form->isSubmitted() && $form->isValid())
       {
-         $data->setAdmissionNumber($form->get('ClassName')->getdata());
+         $studentdata->setAdmissionNumber($form->get('Admission_Number')->getdata());
          $this->em->flush();
           return $this->redirectToRoute('createstudent');
+     
       }
         return $this->render('addstudent.html.twig',[
         'form' => $form->createView(),
-        'students' => $data,
+        'students' => $studentsdata, 
        ]);
     }
 }

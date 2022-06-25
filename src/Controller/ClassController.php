@@ -68,7 +68,7 @@ class ClassController extends AbstractController
       }
       //$classesdata =  $this->classRepository->findAll();
       $RawQuery  = 'SELECT a.id, a.class_name, COUNT(c.id) AS Student_Count FROM classes a
-      LEFT JOIN students c ON c.class_id_id = a.id
+      LEFT JOIN students c ON c.class_id = a.id
       GROUP BY a.id';
       $Classes = $this->classRepository->RawQuery($RawQuery);
 
@@ -78,7 +78,7 @@ class ClassController extends AbstractController
        ]);
     }
 
-    #[Route('/deletedata/{id}', name: 'deletedata')]
+    #[Route('/deleteclass/{id}', name: 'deleteclass')]
     public function DeleteClass($id)
     {
         $classdata =  $this->classRepository->find($id);
@@ -87,7 +87,7 @@ class ClassController extends AbstractController
         return $this->redirectToRoute('create');
     }
 
-    #[Route('/updatedata/{id}',name:'updatedata')]
+    #[Route('/updateClassdata/{id}',name:'updateClassdata')]
     public function UpdateClass($id,Request $request)
     {
         $classdata =  $this->classRepository->find($id);

@@ -2,53 +2,100 @@
 
 namespace App\Controller;
 
-//use App\Entity\Classes;
-//use App\Repository\ClassesRepository;
+use App\Entity\Employee;
+use App\Entity\Users;
+use App\Form\EmployeeFormType;
+use App\Repository\UsersRepository;
+use App\Repository\EmployeeRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class EmployeeController extends AbstractController
 {
-    private $emi;
-    public function __construct(EntityManagerInterface $emi)
+    private $EmpRepo;
+    private $em;
+    public function __construct(EmployeeRepository $EmpRepo,UsersRepository $userRepo,EntityManagerInterface $em)
     {
-        $this->emi =$emi;
+        $this->em = $em;
+        $this->EmpRepo = $EmpRepo;
+        $this->userRepo = $userRepo;
     }
 
-    #[Route('/employee', name: 'employee')]
-    public function index(): Response
+
+    #[Route('/createemployee', name: 'createemployee')]
+    public function create(Request $request): Response
     {
-        //$repository = $this->emi->getRepository(Classes::class);
+        $employee = new Employee();
+        //$user=new Users();
+       $form = $this->createForm(EmployeeFormType::class,$employee);
+       $form->handleRequest($request);
+      if($form->isSubmitted() && $form->isValid())
+      {
+        $employee->setEmployeeCode($form->get('employee_code')->getdata());
+        $employee->setName($form->get('Name')->getdata());
+         $employee->setRole($form->get('role')->getdata());
 
-        // findAll() add method
-       // $student = $repository->findAll();
+        // CREATE USER DATA
 
-       // find() method
-       // select * from student where id=2;
-      // $student = $repository->find(2);
+        $user =new Users();
+        $user->setUserName($form->get('Name')->getdata());
+        $user->setPassword(($form->get('Name')->getdata()). "123");
+         
+        
+        $this->em->persist($user);
+        $this->em->flush();
+         //
+       
 
-       // findBy() method
-       // select * from student where ORDER BY id DESC;
-      // $student = $repository->findBy([],['id'=>'DESC']);
+        $employee->setUser($user);
+        $this->em->persist($employee);
+        $this->em->flush();
+    
+      
+        return $this->redirectToRoute('createemployee');
+      }
+      $data =  $this->EmpRepo->findAll();
+      $RawQuery= 'SELECT employee.id,employee.employee_code,employee.name ,employee.role,users.user_name AS username
+        FROM users JOIN employee ON users.id=employee.user_id';
+        $data = $this->EmpRepo->RawQuery($RawQuery);
 
-       // findOneBy() method
-       // select * from student where id=2 AND Name='Bhavya Bhatia' ORDER BY id DESC;
-      // $student = $repository->findOneBy(['id'=>2,'Name'=>'Bhavya Bhatia'],['id'=>'DESC']);
+        // dd($data);
 
-       // count method
-       // select COUNT() from movie WHERE id=1;
-      // $student = $repository->count(['id'=>1]);
-
-       // getClassName() method
-       // get the entity name
-       // $student = $repository->getClassName();
-
-       // dump var
-        // dd($student);
-
-        return $this->render('addemployee.html.twig');
+       return $this->render('addemployee.html.twig',[
+        'form' => $form->createView(),
+        'employees' => $data,
+       ]);
     }
 
+    #[Route('/deleteemployee/{id}', name: 'deleteemployee')]
+    public function DeleteClass($id)
+    {
+        $data =  $this->EmpRepo->find($id);
+        $this->EmpRepo->remove($data);
+        $this->em->flush();
+        return $this->redirectToRoute('createemployee');
+    }
+
+    #[Route('/updatedata/{id}',name:'updatedata')]
+    public function UpdateClass($id,Request $request)
+    {
+        $data =  $this->EmpRepo->find($id);
+        $data =  $this->EmpRepo->FindEmployeeDataWithOtherFeilds();
+        $form = $this->createForm(EmployeeFormType::class,$data);
+       
+        $form->handleRequest($request);
+      if($form->isSubmitted() && $form->isValid())
+      {
+         $data->setEmployeeCode($form->get('employee_code')->getdata());
+         $this->em->flush();
+          return $this->redirectToRoute('createemployee');
+      }
+        return $this->render('addemployee.html.twig',[
+        'form' => $form->createView(),
+        'employees' => $data,
+       ]);
+    }
 }

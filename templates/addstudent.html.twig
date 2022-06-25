@@ -7,7 +7,7 @@
 
 {% block content %}
 <div style="width:70%;">
-<h1 style="background-color: black;color:white;border-radius:15px;margin-bottom:20px;width:20%;text-align:center;margin-top:10px;">Add Class</h1>
+<h1 style="background-color: #7386D5;color:white;border-radius:15px;margin-bottom:20px;text-align:center;margin-top:10px;">Add Student</h1>
                <div class="form">
                {{form_start(form)}}
                {{form_widget(form)}}
@@ -19,8 +19,8 @@
                         </div>
 </div>
 
-<div class="col-10" style="margin-left: 250px;margin-top: -500px;width: 70%;">
-<h3 style="background-color: gray;color:white;border-radius:15px;margin-top:20px;padding:5px;">Class Data</h3><br />
+<div class="col-10" style="margin-left: 250px;margin-top: -400px;width: 70%;">
+<h3 style="background-color: gray;color:white;border-radius:15px;margin-top:20px;padding:5px;">Student Data</h3><br />
                     <div class="table-responsive">
                         <table class="table table-bordered">
                         
@@ -33,11 +33,11 @@
                             </tr>
                              {% for student in students %}
                                     <tr>
-                                        <td>{{student.getAdmissionNumber()}}</td>
-                                        {# <td id="" class="Student_Count">{{student.getClassId()}}</td> #}
-                                        <td>{{student.id}}</td>
-                                        <td style="text-align:center;"><button type="button" class="btn btn-danger"><a style="color:white;text-decoration:none; width:30%;" href="/deletedata/{{ student.id }}" class="delete_classdata"><i style="margin-right: 5px;" class="fa-solid fa-trash-can"></i>Delete</a></button></td>
-                                        <td style="text-align:center;"><button type="button" class="btn btn-warning"><a style="color:white;text-decoration:none; width:30%;" href="/updatedata/{{ student.id }}" class="delete_classdata"><i style="margin-right: 5px;" class="fa-solid fa-pen-to-square"></i>Edit</a></button></td>
+                                        <td>{{student.admission_number}}</td>
+                                        <td>{{student.name}}</td>
+                                        <td>{{student.class_name}}</td>
+                                        <td style="text-align:center;"><button type="button" class="btn btn-danger"><a style="color:white;text-decoration:none; width:30%;" href="/deletestudent/{{ student.id }}" class="delete_classdata"><i style="margin-right: 5px;" class="fa-solid fa-trash-can"></i>Delete</a></button></td>
+                                        <td style="text-align:center;"><button type="button" class="btn btn-warning"><a style="color:white;text-decoration:none; width:30%;" href="/updatestudent/{{ student.id }}" class="delete_classdata"><i style="margin-right: 5px;" class="fa-solid fa-pen-to-square"></i>Edit</a></button></td>
                                     </tr>
                                     {% endfor %}
                         </table>

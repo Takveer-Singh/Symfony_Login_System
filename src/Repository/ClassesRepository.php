@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\Classes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-
+use Exception;
 /**
  * @extends ServiceEntityRepository<Classes>
  *
@@ -32,11 +32,19 @@ class ClassesRepository extends ServiceEntityRepository
 
     public function remove(Classes $entity, bool $flush = false): void
     {
+        try
+        {
         $this->getEntityManager()->remove($entity);
 
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+        $this->getEntityManager()->commit();
+    }
+    catch(Exception $ex)
+    {
+      $this->getEntityManager()->rollback();
+    }
     }
 
     public function RawQuery($RawQuery  = null)

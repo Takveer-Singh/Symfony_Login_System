@@ -2,27 +2,25 @@
 
 namespace App\Form;
 
-use App\Entity\Classes;
-use App\Entity\Students;
+use App\Entity\Employee;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class StudentFormType extends AbstractType
+class EmployeeFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('Admission_Number',IntegerType::class,[
+            ->add('employee_code',IntegerType::class,[
                 'attr'=>array(
                     'class'=>'form-control',
                     'style'=>'font-weight: 500;',
-                    'placeholder'=>'Admission Number'
-                )
-            ])
+                    'placeholder'=>'Employee code'
+                )])
             ->add('Name',TextType::class,[
                 'attr'=>array(
                     'class'=>'form-control',
@@ -30,27 +28,24 @@ class StudentFormType extends AbstractType
                     'placeholder'=>'Enter Name'
                 )
             ])
-            ->add('class', EntityType::class,[
-                'class'=> Classes::class,
-                'mapped' =>true,
-                'choice_label' => function($choice){
-                    return $choice->getClassName();
-                },
-                'attr' => array(
-                    'class' => 'form-control',
-                    'style'=>'font-weight: 500;',
-                    'label'=>'Student Class'
+            ->add('role',ChoiceType::class,[
+                'choices' => [
+                    'Teacher' => 'teacher',
+                    'Admin' => 'admin',
+                ],
+                "mapped"=>false,
+                'attr'=>array(
+                    'class'=>'form-control',
+                    'style'=>'font-weight: 500;margin-bottom:10px;',
                 )
-            ]);
-            //->add('class')
-            //->add('user')
+               ])
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Students::class,
+            'data_class' => Employee::class,
         ]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Students;
+use Exception;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -23,11 +24,25 @@ class StudentsRepository extends ServiceEntityRepository
 
     public function add(Students $entity, bool $flush = false): void
     {
+        try
+        {
         $this->getEntityManager()->persist($entity);
 
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+        $this->getEntityManager()->commit();
+    }
+    catch(Exception $ex)
+    {
+      $this->getEntityManager()->rollback();
+    }
+    }
+
+    public function RawQuery($RawQuery  = null)
+    {
+        $statement = $this->getEntityManager()->getConnection()->prepare($RawQuery );
+        return $statement->executeQuery()->fetchAllAssociative();
     }
 
     public function remove(Students $entity, bool $flush = false): void
@@ -37,6 +52,20 @@ class StudentsRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function FindStudentDataWithOtherFeilds()
+    {
+
+        $conn = $this->getEntityManager()->getConnection(); 
+        $sql = 'SELECT students.id,students.name, students.class_id,students.admission_number,
+        classes.class_name FROM classes JOIN students ON classes.id = students.class_id';
+
+        $stmt = $conn->prepare($sql);
+
+        $resultSet = $stmt->executeQuery();
+
+         return $resultSet->fetchAllAssociative();
     }
 
 //    /**

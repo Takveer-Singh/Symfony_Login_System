@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Employee;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
  * @extends ServiceEntityRepository<Employee>
@@ -23,11 +24,25 @@ class EmployeeRepository extends ServiceEntityRepository
 
     public function add(Employee $entity, bool $flush = false): void
     {
+        try
+        {
         $this->getEntityManager()->persist($entity);
 
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+        $this->getEntityManager()->commit();
+        }
+        catch(Exception $ex)
+        {
+          $this->getEntityManager()->rollback();
+        }
+    }
+
+    public function RawQuery($RawQuery  = null)
+    {
+        $statement = $this->getEntityManager()->getConnection()->prepare($RawQuery );
+        return $statement->executeQuery()->fetchAllAssociative();
     }
 
     public function remove(Employee $entity, bool $flush = false): void
@@ -37,6 +52,20 @@ class EmployeeRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+
+    public function FindEmployeeDataWithOtherFeilds()
+    {
+        $conn = $this->getEntityManager()->getConnection(); 
+        
+        $sql = 'SELECT employee.id, employee.employee_code,employee.role, employee.name, employee.employee_code FROM users JOIN employee ON users.id=employee.user_id';
+
+        $stmt = $conn->prepare($sql);
+
+        $resultSet = $stmt->executeQuery();
+
+         return $resultSet->fetchAllAssociative();
     }
 
 //    /**
