@@ -26,10 +26,12 @@
     {% block header %}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
+    <a class="navbar-brand" href="#"> <i class="fa fa-openid" style="font-size:48px;">Remplir</i></a>
+   {# <h1 style="color:white;margin-left:1150px"> {{app.user.username}}<h1/> #}
     <div class="collapse navbar-collapse" id="navbarNav">
     </div>
   </div>
+  {# {{app.user.username}} #}
 </nav>
 {% endblock %}
 
@@ -38,7 +40,11 @@
     <div class="container-fluid">
   <div class="row">
     <div class="col-2 sidebar">
+      {% for item in app.user.roles %}
+      {% if item=="ROLE_ADMIN" %}
+        
       <ul class="list-unstyled components">
+     
                 <li>
                     <a href="/createemployee"><i style="margin-right: 5px;" class="fa-solid fa-user"></i>Add Employee</a>
                 </li>
@@ -49,7 +55,25 @@
                 <li>
                     <a href="/createstudent"><i style="margin-right: 5px;" class="fa-solid fa-graduation-cap"></i>Add student</a>
                 </li>
+                 <li>
+                    <a href="/{{app.user ? 'logout':'login'}}"><i style="margin-right: 5px;" class="fa-solid fa-arrow-right-from-bracket"></i>{{app.user ? 'Logout':'Login'}}</a>
+                </li>
+                </ul>
+                 {% endif %}
+                  <ul class="list-unstyled components">
+                 {% if item=="ROLE_TEACHER" %}
+                <li>
+                    <a href="/attendances"><i style="margin-right: 5px;" class="fa-solid fa-clipboard-user"></i>Take Attendance</a>
+                </li>
+                 <li>
+                    <a href="/showattendances"><i style="margin-right: 5px;" class="fa-solid fa-clipboard-user"></i>Show Attendance</a>
+                </li>
+                <li>
+                    <a href="/{{app.user ? 'logout':'login'}}"><i style="margin-right: 5px;" class="fa-solid fa-arrow-right-from-bracket"></i>{{app.user ? 'Logout':'Login'}}</a>
+                </li>
             </ul>
+           {% endif %}
+              {% endfor %}
     </div>
     {% block content %}
          
@@ -62,7 +86,7 @@
 
 
 
-    {% block footer %}
+    {# {% block footer %}
         <footer>
       <div class="container">
   <div class="row">
@@ -78,6 +102,6 @@
   </div>
 </div>
     </footer>
-    {% endblock %}
+    {% endblock %} #}
     </body>
 </html>

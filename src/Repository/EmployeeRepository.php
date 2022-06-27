@@ -55,11 +55,11 @@ class EmployeeRepository extends ServiceEntityRepository
     }
 
 
-    public function FindEmployeeDataWithOtherFeilds()
+    public function FindEmployee()
     {
         $conn = $this->getEntityManager()->getConnection(); 
         
-        $sql = 'SELECT employee.id, employee.employee_code,employee.role, employee.name, employee.employee_code FROM users JOIN employee ON users.id=employee.user_id';
+        $sql = 'SELECT employee.id, employee.employee_code,employee.role, employee.name, employee.employee_code FROM user JOIN employee ON user.id=employee.user_id';
 
         $stmt = $conn->prepare($sql);
 

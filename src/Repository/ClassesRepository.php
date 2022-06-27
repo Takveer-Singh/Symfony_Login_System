@@ -32,19 +32,12 @@ class ClassesRepository extends ServiceEntityRepository
 
     public function remove(Classes $entity, bool $flush = false): void
     {
-        try
-        {
         $this->getEntityManager()->remove($entity);
 
         if ($flush) {
             $this->getEntityManager()->flush();
         }
-        $this->getEntityManager()->commit();
-    }
-    catch(Exception $ex)
-    {
-      $this->getEntityManager()->rollback();
-    }
+
     }
 
     public function RawQuery($RawQuery  = null)

@@ -30,8 +30,8 @@ class EmployeeFormType extends AbstractType
             ])
             ->add('role',ChoiceType::class,[
                 'choices' => [
-                    'Teacher' => 'teacher',
-                    'Admin' => 'admin',
+                    'Teacher' => 'ROLE_TEACHER',
+                    'Admin' => 'ROLE_ADMIN',
                 ],
                 "mapped"=>false,
                 'attr'=>array(

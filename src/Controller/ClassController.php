@@ -86,6 +86,7 @@ class ClassController extends AbstractController
         $this->em->flush();
         return $this->redirectToRoute('create');
     }
+    
 
     #[Route('/updateClassdata/{id}',name:'updateClassdata')]
     public function UpdateClass($id,Request $request)

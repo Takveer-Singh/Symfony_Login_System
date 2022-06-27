@@ -24,7 +24,7 @@ class Students
     #[ORM\JoinColumn(nullable: false)]
     private $class;
 
-    #[ORM\OneToOne(targetEntity: Users::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(targetEntity: User::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
@@ -69,12 +69,12 @@ class Students
         return $this;
     }
 
-    public function getUser(): ?Users
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(Users $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
 

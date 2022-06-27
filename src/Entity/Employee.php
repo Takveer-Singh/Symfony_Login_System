@@ -19,7 +19,8 @@ class Employee
     #[ORM\Column(type: 'string', length: 255)]
     private $Name;
 
-    #[ORM\OneToOne(targetEntity: Users::class, cascade: ['persist', 'remove'])]
+
+    #[ORM\OneToOne(targetEntity: User::class, cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
@@ -55,12 +56,12 @@ class Employee
         return $this;
     }
 
-    public function getUser(): ?Users
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(Users $user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
 

@@ -1,0 +1,72 @@
+{% extends "base.html.twig" %}
+{% block title %}Hello AttendancesController!{% endblock %}
+{% block content %}
+   <form action={{ path('showlist') }} method="POST">
+     <fieldset Style="border:3px solid;width:70%; margin-left:280px;margin-top:-650px;padding: 10px;">
+        <legend Style="width:auto;margin-left: 20px;">Selection Options</legend>
+        <div Style="display:flex;">
+          <div>
+             <Select  name="ClassId" value="ClassId" Style="height:50px;width:250px">
+               {% for data in class_data %}
+                  <option value="{{ data.id }}">{{ data.ClassName }}</option>
+               {% endfor %}
+             </Select>
+          </div>
+           <div class="form-group" Style="margin-left:50px;">
+                 <input type="date" id="Date" name="Date" Style="height:50px;width:350px">
+            </div>
+           <div class="form-group" Style="margin-left:50px;">
+             <input type="submit"  class="btn btn-info" id="click" name="click"  value="Show List" Style="height:50px;">
+           </div>
+        <div>
+     </fieldset>
+   </form>
+<form action="SaveAttendance", method="POST" ,dataType: "json">
+ {% if student_data %}
+ <div class="col-10" style="margin-left: 250px;margin-top: -500px;width: 70%;">
+   <h3 style="background-color: gray;color:white;border-radius:15px;margin-top:20px;padding:5px;">Student Data</h3><br />
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                <tr>
+                     <th style=" background-color: #04AA6D;color: white;">Adm No</th>
+                     <th style=" background-color: #04AA6D;color: white;">Name</th>
+                     <th style=" background-color: #04AA6D;color: white;">Class</th>
+                      <th style=" background-color: #04AA6D;color: white;width:30px;">Status</th>
+                </tr>
+                  {% for data in student_data %}
+                   <input type="hidden" name="StudentId[]" value="{{data.id}}" />
+                   <input type="hidden" name="ClassId[]" value="{{data.class_id}}" />
+                    <input type="hidden" name="Date" value="{{Date}}" />
+                  <tr>
+                     <td>{{ data.admission_number }}</td>
+                     <td>{{ data.studentname }}</td>
+                     <td>{{ data.class_name }}</td>
+                     <td>
+                         <select name="status[]" Style="width:300px;height:40px;">
+                              <option disabled selected></option>
+                              <option value="Present">Present</option>
+                              <option value="Absent">Absent</option>
+                         </select>
+                     </td>
+                  </tr>
+                  
+                  {% endfor %}
+            </table>
+            
+    </div>
+    <div class="form-group" Style="margin-left:800px;">
+                 <input type="submit"  class="btn btn-info" id="click" name="click"  value="Save Attendance" Style="width:300px;height:50px;">
+    </div>
+    </div>
+    {% endif %}
+</form>
+{% endblock %}
+
+
+
+
+
+
+
+
+

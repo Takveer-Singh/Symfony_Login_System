@@ -54,7 +54,7 @@ class StudentsRepository extends ServiceEntityRepository
         }
     }
 
-    public function FindStudentDataWithOtherFeilds()
+    public function FindStudent()
     {
 
         $conn = $this->getEntityManager()->getConnection(); 
@@ -65,6 +65,19 @@ class StudentsRepository extends ServiceEntityRepository
 
         $resultSet = $stmt->executeQuery();
 
+         return $resultSet->fetchAllAssociative();
+    }
+
+    public function GetByClassId(int $id)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        // $sql="SELECT b.id,b.class_id, b.Admission_Number, b.name as StuName,
+        // a.Name FROM classes a JOIN students b on b.class_Id = '$id'
+        // GROUP BY b.id"
+        $sql="SELECT students.id,students.class_id, students.admission_number,students.name as studentname, classes.class_name
+         FROM students JOIN classes ON classes.id = '$id' Where students.class_id = '$id';";
+        $stmt = $conn->prepare($sql);
+        $resultSet = $stmt->executeQuery();
          return $resultSet->fetchAllAssociative();
     }
 

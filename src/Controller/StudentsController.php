@@ -2,26 +2,26 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Students;
-use App\Entity\Users;
 use App\Form\StudentFormType;
+use App\Form\RegistrationFormType;
 use App\Repository\StudentsRepository;
-use App\Repository\UsersRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class StudentsController extends AbstractController
 {
     private $studentRepo;
     private $em;
-    public function __construct(StudentsRepository $studentRepo,UsersRepository $userRepo,EntityManagerInterface $em)
+    public function __construct(StudentsRepository $studentRepo,EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->studentRepo = $studentRepo;
-        $this->userRepo = $userRepo;
     }
 
 
@@ -40,11 +40,17 @@ class StudentsController extends AbstractController
 
         // CREATE USER DATA
 
-        $user =new Users();
+        $user =new User();
         //$user->Setname($form->get('studentname')->getdata());
         //$user->setRole('student');
-        $user->setUserName($form->get('Name')->getdata());
+        $user->setUsername($form->get('Name')->getdata());
         $user->setPassword(($form->get('Name')->getdata()). "123");
+        // $user->setPassword(
+        //     $userPasswordHasher->hashPassword(
+        //             $user,
+        //             $form->get('plainPassword')->getData()
+        //         )
+        //     );
         //$user->setUserType('student');
          
         
@@ -61,8 +67,8 @@ class StudentsController extends AbstractController
         return $this->redirectToRoute('createstudent');
       }
       $data =  $this->studentRepo->findAll();
-      $RawQuery= 'SELECT students.id,students.class_id, students.admission_number,students.name ,users.user_name AS username,
-        classes.class_name FROM users JOIN students ON users.id=students.user_id JOIN classes ON
+      $RawQuery= 'SELECT students.id,students.class_id, students.admission_number,students.name ,user.username AS username,
+        classes.class_name FROM user JOIN students ON user.id=students.user_id JOIN classes ON
         classes.id = students.class_id';
         $data = $this->studentRepo->RawQuery($RawQuery);
 
@@ -112,7 +118,7 @@ class StudentsController extends AbstractController
     {
         $studentdata =  $this->studentRepo->find($id);
         
-        $studentsdata =  $this->studentRepo->FindStudentDataWithOtherFeilds();
+        $studentsdata =  $this->studentRepo->FindStudent();
 
         $form = $this->createForm(StudentFormType::class,$studentdata);
         $form->handleRequest($request);

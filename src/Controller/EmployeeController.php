@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Employee;
-use App\Entity\Users;
 use App\Form\EmployeeFormType;
-use App\Repository\UsersRepository;
+use App\Repository\UserRepository;
 use App\Repository\EmployeeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +17,7 @@ class EmployeeController extends AbstractController
 {
     private $EmpRepo;
     private $em;
-    public function __construct(EmployeeRepository $EmpRepo,UsersRepository $userRepo,EntityManagerInterface $em)
+    public function __construct(EmployeeRepository $EmpRepo,UserRepository $userRepo,EntityManagerInterface $em)
     {
         $this->em = $em;
         $this->EmpRepo = $EmpRepo;
@@ -37,11 +37,13 @@ class EmployeeController extends AbstractController
         $employee->setEmployeeCode($form->get('employee_code')->getdata());
         $employee->setName($form->get('Name')->getdata());
          $employee->setRole($form->get('role')->getdata());
-
+         $roles[] =$form->get('role')->getdata();
+        // dd($array);
         // CREATE USER DATA
 
-        $user =new Users();
-        $user->setUserName($form->get('Name')->getdata());
+        $user =new User();
+        $user->setUsername($form->get('Name')->getdata());
+        $user->setRoles($roles);
         $user->setPassword(($form->get('Name')->getdata()). "123");
          
         
@@ -58,8 +60,8 @@ class EmployeeController extends AbstractController
         return $this->redirectToRoute('createemployee');
       }
       $data =  $this->EmpRepo->findAll();
-      $RawQuery= 'SELECT employee.id,employee.employee_code,employee.name ,employee.role,users.user_name AS username
-        FROM users JOIN employee ON users.id=employee.user_id';
+      $RawQuery= 'SELECT employee.id,employee.employee_code,employee.name ,employee.role,user.username AS username
+        FROM user JOIN employee ON user.id=employee.user_id';
         $data = $this->EmpRepo->RawQuery($RawQuery);
 
         // dd($data);
@@ -83,7 +85,7 @@ class EmployeeController extends AbstractController
     public function UpdateClass($id,Request $request)
     {
         $data =  $this->EmpRepo->find($id);
-        $data =  $this->EmpRepo->FindEmployeeDataWithOtherFeilds();
+        $data =  $this->EmpRepo->FindEmployee();
         $form = $this->createForm(EmployeeFormType::class,$data);
        
         $form->handleRequest($request);
